@@ -13,7 +13,7 @@ const userRegister=async(req,res,next)=>{
           }
 
           // check in database user already exists
-          const existedUser=User.findOne({$or:[{userName},{password}]});
+          const existedUser=await User.findOne({$or:[{userName},{email}]});
 
           if(existedUser){
              return res.status(409).json({
@@ -24,6 +24,7 @@ const userRegister=async(req,res,next)=>{
 
         const avatorLocalPath=req.files?.avator[0]?.path;
          const coverImageLocalPath=req.files?.coverImage[0]?.path;
+         console.log(avatorLocalPath);
 
          if(!avatorLocalPath)
          {
@@ -42,15 +43,16 @@ const userRegister=async(req,res,next)=>{
           }
 
           // create user object
-          const user=User.create({
+          const user=await User.create({
             fullName,
             userName,
+            email,
             avator:avator.url,
             password:password.toLowerCase,
             coverImage:coverImage?.url || ""
           });
 
-          const createdUser=User.findById(user._id).select("-password -refreshToken");
+          const createdUser=await User.findById(user._id).select("-password -refreshToken");
           if(!createdUser){
              return res.status(500).json({
               message:"user is not created"
