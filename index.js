@@ -20,6 +20,10 @@ app.use(express.static("public"));
 connectDB();
 
 
+//  Routers 
+import userRouter from './src/routes/user.js';
+ app.use('/api/v1/users',userRouter);
+
 
 const PORT=process.env.PORT || 3000;
 
